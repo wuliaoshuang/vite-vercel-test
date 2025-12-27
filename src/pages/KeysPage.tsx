@@ -83,7 +83,7 @@ function KeysPage() {
   };
 
   return (
-    <div className="flex-1 h-screen flex flex-col min-w-0 bg-[#f5f5f7] dark:bg-black overflow-hidden">
+    <div className="flex-1 h-svh flex flex-col min-w-0 bg-[#f5f5f7] dark:bg-black overflow-hidden">
       <PageHeader
         title="密钥绑定"
         subtitle="管理 API 密钥和访问令牌"

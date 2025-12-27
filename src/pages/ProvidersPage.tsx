@@ -118,7 +118,7 @@ function ProvidersPage() {
   };
 
   return (
-    <div className="flex-1 h-screen flex flex-col min-w-0 bg-[#f5f5f7] dark:bg-black overflow-hidden">
+    <div className="flex-1 h-svh flex flex-col min-w-0 bg-[#f5f5f7] dark:bg-black overflow-hidden">
       <PageHeader
         title="供应商"
         subtitle="管理 AI 服务提供商"
