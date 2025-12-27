@@ -130,128 +130,145 @@ function App() {
           </button>
         </header>
 
-        {/* 消息区域 - 全宽 */}
+        {/* 消息区域 */}
         <div className="flex-1 overflow-y-auto">
           <div className="py-4">
             {messages.map((message) => (
               <div
                 key={message.id}
-                className={`group flex gap-4 px-4 py-3 ${message.role === 'user' ? 'bg-[#f5f5f7]' : ''}`}
+                className={`group ${message.role === 'user' ? 'flex justify-end px-4 py-3' : 'flex gap-4 px-6 py-4'}`}
               >
-                {/* 头像 */}
-                <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 ${
-                  message.role === 'user'
-                    ? 'bg-[#e5e5ea]'
-                    : 'bg-[#95C0EC]'
-                }`}>
-                  {message.role === 'user' ? (
-                    <User className="w-4 h-4 text-[#86868b]" />
-                  ) : (
-                    <Bot className="w-4 h-4 text-white" />
-                  )}
-                </div>
-
-                {/* 消息内容 */}
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="flex-1">
-                      <p className="text-[15px] text-[#1d1d1f] whitespace-pre-wrap leading-relaxed">
-                        {message.content}
-                      </p>
+                {/* AI 消息 - 平铺全宽 */}
+                {message.role === 'assistant' && (
+                  <>
+                    <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 bg-[#95C0EC]">
+                      <Bot className="w-4 h-4 text-white" />
                     </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-start justify-between gap-4">
+                        <div className="flex-1">
+                          <p className="text-[15px] text-[#1d1d1f] whitespace-pre-wrap leading-relaxed">
+                            {message.content}
+                          </p>
+                        </div>
+                        <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <button
+                            onClick={() => copyMessage(message.id, message.content)}
+                            className="p-1.5 hover:bg-black/[0.03] rounded-lg transition-colors"
+                          >
+                            {copiedId === message.id ? (
+                              <Check className="w-4 h-4 text-[#95C0EC]" />
+                            ) : (
+                              <Copy className="w-4 h-4 text-[#86868b]" />
+                            )}
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </>
+                )}
 
-                    {/* 操作按钮 */}
-                    <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <button
-                        onClick={() => copyMessage(message.id, message.content)}
-                        className="p-1.5 hover:bg-black/[0.03] rounded-lg transition-colors"
-                        title="复制"
-                      >
-                        {copiedId === message.id ? (
-                          <Check className="w-4 h-4 text-[#95C0EC]" />
-                        ) : (
-                          <Copy className="w-4 h-4 text-[#86868b]" />
-                        )}
-                      </button>
+                {/* 用户消息 - 气泡模式 */}
+                {message.role === 'user' && (
+                  <div className="flex items-end gap-3 max-w-2xl">
+                    <div className="relative group/bubble">
+                      <div className="px-4 py-2.5 bg-[#95C0EC] text-white rounded-2xl rounded-br-md">
+                        <p className="text-[15px] whitespace-pre-wrap leading-relaxed">
+                          {message.content}
+                        </p>
+                      </div>
+                      {/* 复制按钮 */}
+                      <div className="absolute top-1/2 -translate-y-1/2 left-full ml-2 opacity-0 group-hover/bubble:opacity-100 transition-opacity">
+                        <button
+                          onClick={() => copyMessage(message.id, message.content)}
+                          className="p-1.5 bg-white border border-black/10 rounded-lg hover:bg-black/[0.03] transition-colors shadow-sm"
+                        >
+                          {copiedId === message.id ? (
+                            <Check className="w-3.5 h-3.5 text-[#95C0EC]" />
+                          ) : (
+                            <Copy className="w-3.5 h-3.5 text-[#86868b]" />
+                          )}
+                        </button>
+                      </div>
+                    </div>
+                    <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 bg-[#e5e5ea]">
+                      <User className="w-4 h-4 text-[#86868b]" />
                     </div>
                   </div>
-                </div>
+                )}
               </div>
             ))}
           </div>
         </div>
 
         {/* 输入区域 - 全宽 */}
-        <div className="border-t border-black/5 bg-white">
-          <div className="p-3">
-            {/* 输入框 */}
-            <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-sm shadow-black/[0.03] border border-black/10 focus-within:border-[#95C0EC] focus-within:shadow-md focus-within:shadow-[#95C0EC]/10 transition-all">
-              {/* 工具栏 */}
-              <div className="flex items-center gap-1 px-3 py-2 border-b border-black/5">
-                <button
-                  onClick={() => setShowTools(!showTools)}
-                  className="p-1.5 hover:bg-black/[0.03] rounded-lg transition-colors"
-                >
-                  <Plus className="w-4 h-4 text-[#86868b]" />
-                </button>
-                <button className="p-1.5 hover:bg-black/[0.03] rounded-lg transition-colors">
-                  <Paperclip className="w-4 h-4 text-[#86868b]" />
-                </button>
-                <button className="p-1.5 hover:bg-black/[0.03] rounded-lg transition-colors">
-                  <Image className="w-4 h-4 text-[#86868b]" />
-                </button>
-                <div className="flex-1" />
-                <button className="p-1.5 hover:bg-black/[0.03] rounded-lg transition-colors">
-                  <Mic className="w-4 h-4 text-[#86868b]" />
-                </button>
-              </div>
-
-              {/* 文本输入区 */}
-              <div className="flex items-end gap-2 px-3 py-2">
-                <textarea
-                  value={input}
-                  onChange={(e) => setInput(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' && !e.shiftKey) {
-                      e.preventDefault()
-                      handleSend()
-                    }
-                  }}
-                  placeholder="输入消息... (⌘Enter 发送)"
-                  className="flex-1 bg-transparent resize-none outline-none text-[15px] text-[#1d1d1f] placeholder-[#86868b] min-h-[24px] max-h-48 leading-relaxed py-1"
-                  rows={1}
-                  style={{ fieldSizing: 'content' }}
-                />
-                <button
-                  onClick={handleSend}
-                  disabled={!input.trim()}
-                  className={`p-2 rounded-lg transition-all active:scale-95 ${
-                    input.trim()
-                      ? 'bg-[#95C0EC] text-white hover:bg-[#7aaddd]'
-                      : 'bg-[#e5e5ea] text-[#86868b] cursor-not-allowed'
-                  }`}
-                >
-                  <Send className="w-4 h-4" />
-                </button>
-              </div>
-            </div>
-
-            {/* 提示文本 */}
-            <div className="flex items-center justify-center gap-3 mt-2">
-              <p className="text-[12px] text-[#86868b]">
-                AI 可能产生错误，请核实重要信息
-              </p>
-              <span className="text-[#86868b]">·</span>
-              <button className="text-[12px] text-[#95C0EC] hover:underline">
-                查看快捷键
+        <div className="border-t border-black/5 bg-white p-4">
+          <div className="bg-white rounded-xl shadow-sm shadow-black/[0.03] border border-black/10 focus-within:border-[#95C0EC] focus-within:shadow-md focus-within:shadow-[#95C0EC]/10 transition-all">
+            {/* 工具栏 */}
+            <div className="flex items-center gap-1 px-3 py-2 border-b border-black/5">
+              <button
+                onClick={() => setShowTools(!showTools)}
+                className="p-1.5 hover:bg-black/[0.03] rounded-lg transition-colors"
+              >
+                <Plus className="w-4 h-4 text-[#86868b]" />
+              </button>
+              <button className="p-1.5 hover:bg-black/[0.03] rounded-lg transition-colors">
+                <Paperclip className="w-4 h-4 text-[#86868b]" />
+              </button>
+              <button className="p-1.5 hover:bg-black/[0.03] rounded-lg transition-colors">
+                <Image className="w-4 h-4 text-[#86868b]" />
+              </button>
+              <div className="flex-1" />
+              <button className="p-1.5 hover:bg-black/[0.03] rounded-lg transition-colors">
+                <Mic className="w-4 h-4 text-[#86868b]" />
               </button>
             </div>
+
+            {/* 文本输入区 */}
+            <div className="flex items-end gap-2 px-3 py-2">
+              <textarea
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault()
+                    handleSend()
+                  }
+                }}
+                placeholder="输入消息... (⌘Enter 发送)"
+                className="flex-1 bg-transparent resize-none outline-none text-[15px] text-[#1d1d1f] placeholder-[#86868b] min-h-[24px] max-h-48 leading-relaxed py-1"
+                rows={1}
+                style={{ fieldSizing: 'content' }}
+              />
+              <button
+                onClick={handleSend}
+                disabled={!input.trim()}
+                className={`p-2 rounded-lg transition-all active:scale-95 ${
+                  input.trim()
+                    ? 'bg-[#95C0EC] text-white hover:bg-[#7aaddd]'
+                    : 'bg-[#e5e5ea] text-[#86868b] cursor-not-allowed'
+                }`}
+              >
+                <Send className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+
+          {/* 提示文本 */}
+          <div className="flex items-center justify-center gap-3 mt-2">
+            <p className="text-[12px] text-[#86868b]">
+              AI 可能产生错误，请核实重要信息
+            </p>
+            <span className="text-[#86868b]">·</span>
+            <button className="text-[12px] text-[#95C0EC] hover:underline">
+              查看快捷键
+            </button>
           </div>
         </div>
 
         {/* 展开工具面板 */}
         {showTools && (
-          <div className="absolute bottom-24 left-1/2 -translate-x-1/2 bg-white rounded-xl shadow-xl border border-black/10 p-2 z-50 animate-in fade-in slide-in-from-bottom-2 duration-200">
+          <div className="absolute bottom-28 left-1/2 -translate-x-1/2 bg-white rounded-xl shadow-xl border border-black/10 p-2 z-50 animate-in fade-in slide-in-from-bottom-2 duration-200">
             <button
               onClick={() => setShowTools(false)}
               className="absolute top-2 right-2 p-1 hover:bg-black/[0.03] rounded-lg transition-colors"
